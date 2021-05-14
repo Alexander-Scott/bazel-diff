@@ -7,6 +7,7 @@ bazel_diff_dependencies()
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 
 rules_proto_dependencies()
+
 rules_proto_toolchains()
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
@@ -18,5 +19,5 @@ maven_install(
     repositories = [
         "http://uk.maven.org/maven2",
         "https://jcenter.bintray.com/",
-    ]
+    ],
 )

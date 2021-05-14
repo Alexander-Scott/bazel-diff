@@ -7,5 +7,5 @@ BAZEL_DIFF_MAVEN_ARTIFACTS = [
     maven.artifact("org.mockito", "mockito-core", "3.5.15", testonly = True),
     "info.picocli:picocli:jar:4.3.2",
     "com.google.code.gson:gson:jar:2.8.6",
-    "com.google.guava:guava:29.0-jre"
+    "com.google.guava:guava:29.0-jre",
 ]
