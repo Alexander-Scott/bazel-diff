@@ -4,7 +4,7 @@ java_library(
     name = "Submodule",
     srcs = glob(["*.java"]),
     tags = [
-        "manual"
+        "manual",
     ],
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
 )

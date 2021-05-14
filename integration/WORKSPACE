@@ -4,9 +4,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "rules_jvm_external",
-    strip_prefix = "rules_jvm_external-%s" % "3.3",
     sha256 = "d85951a92c0908c80bd8551002d66cb23c3434409c814179c0ff026b53544dab",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % "3.3"
+    strip_prefix = "rules_jvm_external-%s" % "3.3",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % "3.3",
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
@@ -17,7 +17,7 @@ maven_install(
     repositories = [
         "http://uk.maven.org/maven2",
         "https://jcenter.bintray.com/",
-    ]
+    ],
 )
 
 http_archive(
@@ -31,6 +31,7 @@ load(
     "@io_bazel_rules_docker//repositories:repositories.bzl",
     container_repositories = "repositories",
 )
+
 container_repositories()
 
 load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")

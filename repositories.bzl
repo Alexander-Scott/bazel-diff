@@ -9,8 +9,9 @@ def _maybe(repo_rule, name, **kwargs):
     if not native.existing_rule(name):
         repo_rule(name = name, **kwargs)
 
-def bazel_diff_dependencies(rules_jvm_external_tag=DEFAULT_JVM_EXTERNAL_TAG,
-                            rules_jvm_external_sha=RULES_JVM_EXTERNAL_SHA):
+def bazel_diff_dependencies(
+        rules_jvm_external_tag = DEFAULT_JVM_EXTERNAL_TAG,
+        rules_jvm_external_sha = RULES_JVM_EXTERNAL_SHA):
     _maybe(
         http_archive,
         name = "bazel_skylib",
@@ -37,5 +38,5 @@ def bazel_diff_dependencies(rules_jvm_external_tag=DEFAULT_JVM_EXTERNAL_TAG,
         name = "rules_jvm_external",
         strip_prefix = "rules_jvm_external-%s" % rules_jvm_external_tag,
         sha256 = rules_jvm_external_sha,
-        url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % rules_jvm_external_tag
+        url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % rules_jvm_external_tag,
     )
