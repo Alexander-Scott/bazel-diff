@@ -52,7 +52,7 @@ class BazelClientImpl implements BazelClient {
         String targetQuery = impactedTargets.stream()
                                             .map(target -> String.format("'%s'", target))
                                             .collect(Collectors.joining(" + "));
-        String query = query = String.format("rdeps(%s except '//external:all-targets', %s)", universeQuery, targetQuery);
+        String query = String.format("rdeps(%s except '//external:all-targets', %s)", universeQuery, targetQuery);
         if (avoidQuery != null) {
             query = String.format("(%s) except (%s)", query, avoidQuery);
         }
