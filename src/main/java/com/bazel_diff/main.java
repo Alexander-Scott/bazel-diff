@@ -98,7 +98,7 @@ class GenerateHashes implements Callable<Integer> {
     @Override
     public Integer call() {
         GitClient gitClient = new GitClientImpl(parent.workspacePath);
-        BazelClient bazelClient = new BazelClientImpl(parent.workspacePath, parent.bazelPath, parent.bazelStartupOptions, parent.bazelCommandOptions, BazelDiff.isVerbose());
+        BazelClient bazelClient = new BazelClientImpl(parent.workspacePath, parent.workspaceSubDir, parent.bazelPath, parent.bazelStartupOptions, parent.bazelCommandOptions, BazelDiff.isVerbose());
         TargetHashingClient hashingClient = new TargetHashingClientImpl(bazelClient);
         try {
             gitClient.ensureAllChangesAreCommitted();
@@ -146,6 +146,9 @@ class BazelDiff implements Callable<Integer> {
     @Option(names = {"-w", "--workspacePath"}, description = "Path to Bazel workspace directory.", scope = ScopeType.INHERIT, required = true)
     Path workspacePath;
 
+    @Option(names = {"-wsd", "--workspaceSubDir"}, description = "Name of a sub directory in the Bazel workspace.", scope = ScopeType.INHERIT)
+    Path workspaceSubDir;
+
     @Option(names = {"-b", "--bazelPath"}, description = "Path to Bazel binary", scope = ScopeType.INHERIT, required = true)
     Path bazelPath;
 
@@ -178,7 +181,7 @@ class BazelDiff implements Callable<Integer> {
             return ExitCode.USAGE;
         }
         GitClient gitClient = new GitClientImpl(workspacePath);
-        BazelClient bazelClient = new BazelClientImpl(workspacePath, bazelPath, bazelStartupOptions, bazelCommandOptions, BazelDiff.isVerbose());
+        BazelClient bazelClient = new BazelClientImpl(workspacePath, workspaceSubDir, bazelPath, bazelStartupOptions, bazelCommandOptions, BazelDiff.isVerbose());
         TargetHashingClient hashingClient = new TargetHashingClientImpl(bazelClient);
         try {
             gitClient.ensureAllChangesAreCommitted();

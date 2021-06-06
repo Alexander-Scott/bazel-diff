@@ -27,13 +27,15 @@ interface BazelClient {
 
 class BazelClientImpl implements BazelClient {
     private Path workingDirectory;
+    private Path workingSubDir;
     private Path bazelPath;
     private Boolean verbose;
     private List<String> startupOptions;
     private List<String> commandOptions;
 
-    BazelClientImpl(Path workingDirectory, Path bazelPath, String startupOptions, String commandOptions, Boolean verbose) {
+    BazelClientImpl(Path workingDirectory, Path workingSubDir, Path bazelPath, String startupOptions, String commandOptions, Boolean verbose) {
         this.workingDirectory = workingDirectory.normalize();
+        this.workingSubDir = workingSubDir;
         this.bazelPath = bazelPath;
         this.startupOptions = startupOptions != null ? Arrays.asList(startupOptions.split(" ")): new ArrayList<String>();
         this.commandOptions = commandOptions != null ? Arrays.asList(commandOptions.split(" ")): new ArrayList<String>();
@@ -42,7 +44,8 @@ class BazelClientImpl implements BazelClient {
 
     @Override
     public List<BazelTarget> queryAllTargets() throws IOException {
-        List<Build.Target> targets = performBazelQuery("'//external:all-targets' + '//...:all-targets'");
+        String query = String.format("'//external:all-targets' + '/%s/...:all-targets'", workingSubDir.toString());
+        List<Build.Target> targets = performBazelQuery(query);
         return targets.stream().map( target -> new BazelTargetImpl(target)).collect(Collectors.toList());
     }
 
@@ -52,7 +55,7 @@ class BazelClientImpl implements BazelClient {
         String targetQuery = impactedTargets.stream()
                                             .map(target -> String.format("'%s'", target))
                                             .collect(Collectors.joining(" + "));
-        String query = String.format("rdeps(//... except '//external:all-targets', %s)", targetQuery);
+        String query = String.format("rdeps(/%s/... except '//external:all-targets', %s)", workingSubDir.toString(), targetQuery);
         if (avoidQuery != null) {
             query = String.format("(%s) except (%s)", query, avoidQuery);
         }
@@ -123,6 +126,9 @@ class BazelClientImpl implements BazelClient {
         cmd.addAll(this.commandOptions);
         cmd.add("--query_file");
         cmd.add(tempFile.toString());
+        if (verbose) {
+            System.out.println(String.format("Executing cmd: %s", cmd));
+        }
 
         ProcessBuilder pb = new ProcessBuilder(cmd).directory(workingDirectory.toFile());
         Process process = pb.start();
@@ -133,7 +139,7 @@ class BazelClientImpl implements BazelClient {
             targets.add(target);
         }
 
-        Files.delete(tempFile);
+        //Files.delete(tempFile);
 
         return targets;
     }
